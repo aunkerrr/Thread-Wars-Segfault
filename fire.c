@@ -10,8 +10,8 @@ static void sizechanged()
 	clear();
 }
 
-int main()
-{
+void* menu_over_fire(void * args){
+  (void) args;
 	initscr();
 
 	const char *charz[] = {" ", ".", ":", "^", "*", "x", "s", "S", "#", "$"};
