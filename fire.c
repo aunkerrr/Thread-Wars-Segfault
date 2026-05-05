@@ -1,6 +1,11 @@
 #include "shared.h"
 #include "fire.h"
 
+static int *b = NULL;
+static int width;
+static int height;
+static int size;
+
 static void sizechanged()
 {
 	getmaxyx(stdscr, height, width);
