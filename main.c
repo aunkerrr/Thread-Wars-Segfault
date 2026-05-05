@@ -4,6 +4,7 @@
 #include "shared.h"
 
 int main(void) {
+    pthread_t menu;
     int start_game = show_fire_menu();
 
     if (start_game == 1) {

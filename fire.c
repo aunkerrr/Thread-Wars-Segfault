@@ -1,6 +1,18 @@
 #include "shared.h"
 #include "fire.h"
 
+char * gamename = {
+"  _______ _                        _     __          __                   _____             __            _ _   ",
+" |__   __| |                      | |    \ \        / /                  / ____|           / _|          | | |  ",
+"    | |  | |__  _ __ ___  __ _  __| |_____\ \  /\  / /_ _ _ __ ___ _____| (___   ___  __ _| |_ __ _ _   _| | |_ ",
+"    | |  | '_ \| '__/ _ \/ _` |/ _` |______\ \/  \/ / _` | '__/ __|______\___ \ / _ \/ _` |  _/ _` | | | | | __|",
+"    | |  | | | | | |  __/ (_| | (_| |       \  /\  / (_| | |  \__ \      ____) |  __/ (_| | || (_| | |_| | | |_ ",
+"    |_|  |_| |_|_|  \___|\__,_|\__,_|        \/  \/ \__,_|_|  |___/     |_____/ \___|\__, |_| \__,_|\__,_|_|\__|",
+"                                                                                      __/ |                     ",
+"                                                                                     |___/                      "
+};
+
+
 static int *b = NULL;
 static int width;
 static int height;
@@ -18,6 +30,7 @@ static void sizechanged()
 void* menu_over_fire(void * args){
   (void) args;
 	initscr();
+  keypad(stdscr, TRUE);
 
 	const char *charz[] = {" ", ".", ":", "^", "*", "x", "s", "S", "#", "$"};
 
@@ -28,7 +41,14 @@ void* menu_over_fire(void * args){
 	init_pair(3, COLOR_YELLOW, COLOR_BLACK);
 	init_pair(4, COLOR_BLUE, COLOR_BLACK);
 
+  init_pair(5, COLOR_WHITE, COLOR_BLACK); // for text
+
 	sizechanged();
+
+  int selected_option = 0; // 0 - START, 1 - EXIT
+  int menu_active = 1;
+  int choice = -1;
+
 
 	while (1)
 	{
@@ -45,6 +65,20 @@ void* menu_over_fire(void * args){
 				addstr(charz[((b[i] > 9) ? 9 : b[i])]);
 			}
 		}
+
+    int art_lines = 8;
+    int art_width = 106;
+    int start_y = (height / 2) - (art_lines / 2) - 5; // Moving just a bit higher
+    int start_x = (width / 2) - (art_width / 2);
+
+    attrset(COLOR_PAIR(2) | A_BOLD);
+    for (int i = 0; i < art_lines; i++){
+      if(start_x >= 0 && start_y + i >= 0 && start_y + i < height) {
+        mvaddstr(start_y + i, start_x, gamename[i]);
+      }
+    }
+    
+
 
 		refresh();
 		timeout(30);
