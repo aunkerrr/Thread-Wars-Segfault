@@ -1,17 +1,16 @@
 #include "shared.h"
 #include "fire.h"
 
-char * gamename = {
+const char *gamename[] = {
 "  _______ _                        _     __          __                   _____             __            _ _   ",
-" |__   __| |                      | |    \ \        / /                  / ____|           / _|          | | |  ",
-"    | |  | |__  _ __ ___  __ _  __| |_____\ \  /\  / /_ _ _ __ ___ _____| (___   ___  __ _| |_ __ _ _   _| | |_ ",
-"    | |  | '_ \| '__/ _ \/ _` |/ _` |______\ \/  \/ / _` | '__/ __|______\___ \ / _ \/ _` |  _/ _` | | | | | __|",
-"    | |  | | | | | |  __/ (_| | (_| |       \  /\  / (_| | |  \__ \      ____) |  __/ (_| | || (_| | |_| | | |_ ",
-"    |_|  |_| |_|_|  \___|\__,_|\__,_|        \/  \/ \__,_|_|  |___/     |_____/ \___|\__, |_| \__,_|\__,_|_|\__|",
+" |__   __| |                      | |    \\\\ \\        / /                  / ____|           / _|          | | |  ",
+"    | |  | |__  _ __ ___  __ _  __| |_____\\\\ \\  /\\  / /_ _ _ __ ___ _____| (___   ___  __ _| |_ __ _ _   _| | |_ ",
+"    | |  | '_ \\| '__/ _ \\/ _` |/ _` |______\\\\ \\/  \\/ / _` | '__/ __|______\\___ \\ / _ \\/ _` |  _/ _` | | | | | __|",
+"    | |  | | | | | |  __/ (_| | (_| |       \\  /\\  / (_| | |  \\__ \\      ____) |  __/ (_| | || (_| | |_| | | |_ ",
+"    |_|  |_| |_|_|  \\___|\\__,_|\\__,_|        \\/  \\/ \\__,_|_|  |___/     |_____/ \\___|\\__, |_| \\__,_|\\__,_|_|\\__|",
 "                                                                                      __/ |                     ",
 "                                                                                     |___/                      "
 };
-
 
 static int *b = NULL;
 static int width;
@@ -30,11 +29,13 @@ static void sizechanged()
 void* menu_over_fire(void * args){
   (void) args;
 	initscr();
+  noecho(); // no ghost characters
+  cbreak(); // faster response
   keypad(stdscr, TRUE);
 
 	const char *charz[] = {" ", ".", ":", "^", "*", "x", "s", "S", "#", "$"};
 
-	curs_set(0);
+	curs_set(0); // blinking cursor turn off 
 	start_color();
 	init_pair(1, COLOR_BLACK, COLOR_BLACK);
 	init_pair(2, COLOR_RED, COLOR_BLACK);
@@ -77,17 +78,28 @@ void* menu_over_fire(void * args){
         mvaddstr(start_y + i, start_x, gamename[i]);
       }
     }
-    
 
+    attrset(COLOR_PAIR(5) | A_BOLD);
+
+    mvprintw(height / 2 + 2, width /2 - 8, "%s START GAME",  (selected_option == 0) ? ">>" : "  ");
+    mvprintw(height / 2 + 4, width / 2 - 8, "%s EXIT", (selected_option == 1) ? ">>" : "  ");
 
 		refresh();
 		timeout(30);
 		int ch = getch();
-		if ((ch != -1) && (ch != KEY_RESIZE))
-			break;
-		if (ch == KEY_RESIZE)
-			sizechanged();
-	}
-	endwin();
-	return 0;
+
+    if (ch == KEY_RESIZE) {
+        sizechanged();
+    } else if (ch == KEY_UP || ch == 'w') {
+        selected_option = 0;
+    } else if (ch == KEY_DOWN || ch == 's') {
+        selected_option = 1;
+    } else if (ch == '\n') {
+        choice = selected_option;
+        break; 
+    }
+  }
+
+	endwin(); // closing ncurses
+	return (void*)(long)choice;
 }

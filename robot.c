@@ -1,9 +1,6 @@
 #include "shared.h"
 
-#define MAX_ROBOT 5
-#define MAP_HEIGHT 20
-#define MAP_WIDTH 50
-
+// Actual variable definitions
 char rSymbol[MAX_ROBOT] = {'T', 'S', 'B', 'P', 'M'};
 int rState[MAX_ROBOT] = {1, 1, 1, 1, 1};
 int rHP[MAX_ROBOT] = {150, 80, 100, 100, 90};
